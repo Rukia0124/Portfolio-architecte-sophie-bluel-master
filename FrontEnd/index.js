@@ -1,12 +1,12 @@
 const gallery = document.querySelector(".gallery");
+const filters = document.querySelector(".filters");
 let galleryData = [];
-console.log(gallery);
 
 async function fetchGallery() {
   await fetch("http://localhost:5678/api/works")
     .then((res) => res.json())
     .then((data) => (galleryData = data));
-
+  filtersDisplay();
   worksDisplay();
 }
 function worksDisplay() {
@@ -22,4 +22,22 @@ function worksDisplay() {
     )
     .join("");
 }
-window.addEventListener("load", fetchGallery);
+function filtersDisplay() {
+  let filtersData = new Set();
+  filtersData.add("Tous");
+  galleryData.forEach((filter) => {
+    filtersData.add(filter.category.name);
+  });
+  const filtersArray = Array.from(filtersData);
+  filters.innerHTML = filtersArray
+    .map(
+      (filter) => `
+    <button>${filter}</button>
+    `
+    )
+    .join("");
+}
+
+window.addEventListener("load", (event) => {
+  fetchGallery();
+});
