@@ -56,7 +56,14 @@ function addFilterListener() {
     });
   }
 }
+let login = document.querySelector("#login");
+login.addEventListener("click", (e) => {
+  navigateToLoginPage();
+});
 
+function navigateToLoginPage() {
+  window.location = "login.html";
+}
 window.addEventListener("load", (event) => {
   fetchGallery();
 });
