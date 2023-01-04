@@ -32,7 +32,7 @@ function filtersDisplay() {
   filters.innerHTML = filtersArray
     .map(
       (filter) => `
-    <button>${filter}</button>
+    <button id="filter">${filter}</button>
     `
     )
     .join("");
