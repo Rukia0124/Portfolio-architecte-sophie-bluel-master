@@ -202,6 +202,10 @@ li:hover {
 	color: #B1663C;
 }
 
+#logout {
+	display: none
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -227,6 +231,10 @@ li:hover {
 
 #introduction p {
 	margin-bottom: 0.5em;
+}
+
+#modify-btn {
+	display: none;
 }
 
 #portfolio h2 {

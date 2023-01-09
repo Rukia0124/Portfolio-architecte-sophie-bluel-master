@@ -66,4 +66,34 @@ function navigateToLoginPage() {
 }
 window.addEventListener("load", (event) => {
   fetchGallery();
+  checkCookie();
+});
+
+function checkCookie() {
+  let token = getCookie("access_token");
+  console.log("test", token);
+  if (token) {
+    document.getElementById("modify-btn").style.display = "block";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("logout").style.display = "block";
+  } else {
+    document.getElementById("modify-btn").style.display = "none";
+    document.getElementById("login").style.display = "block";
+    document.getElementById("logout").style.display = "none";
+  }
+}
+
+function getCookie(name) {
+  let value = "; " + document.cookie;
+  let parts = value.split("; " + name + "=");
+  console.log(value);
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
+// window.onload = checkCookie();
+
+window.addEventListener("unload", function (event) {});
+
+document.getElementById("logout").addEventListener("click", function () {
+  document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+  window.location.reload();
 });

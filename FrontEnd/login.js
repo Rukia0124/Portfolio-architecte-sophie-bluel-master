@@ -19,11 +19,13 @@ document
       method: "POST",
       headers: myHeaders,
       body: myBody,
+      credentials: "same-origin",
     })
       .then(function (response) {
         if (response.ok) {
           response.json().then(function (data) {
             document.cookie = "access_token=" + data.token;
+            window.location = "index.html";
           });
         } else {
           alert("Connexion échouée");
