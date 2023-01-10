@@ -196,6 +196,7 @@ nav ul {
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+	cursor: pointer;
 }
 
 li:hover {
@@ -324,6 +325,7 @@ li:hover {
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	resize: none;
 }
 
 input[type="submit"],
@@ -336,6 +338,21 @@ input[type="submit"],
 	width: 180px;
 	text-align: center;
 	border-radius: 60px;
+	cursor: pointer;
+}
+
+.title {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#modify-btn {
+	border: none;
+	background-color: #ffffff;
+	font-family: 'Syne';
+	font-size: 16px;
+	margin: 0 20px 20px 20px;
 }
 
 #login-form>input[type=submit] {

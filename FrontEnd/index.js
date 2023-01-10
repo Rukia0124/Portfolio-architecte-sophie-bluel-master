@@ -29,19 +29,20 @@ async function fetchGallery() {
 // }
 
 function worksDisplay(data) {
-  //   gallery.innerHTML = data
-  //     .map(
-  //       (work) =>
-  //         `
+  // gallery.innerHTML = data
+  //   .map(
+  //     (work) =>
+  //       `
   //       <figure>
   //       <img src=${work.imageUrl} crossorigin="anonymous" alt=${work.title}>
   //       <figcaption>${work.title}</figcaption>
   //     </figure>
   // `
-  //     )
-  //     .join("");
-
-  for (let i = 0; i < galleryData.length; i++) {
+  //   )
+  //   .join("");
+  console.log(data);
+  gallery.innerHTML = "";
+  for (let i = 0; i < data.length; i++) {
     const workElement = document.createElement("figure");
     const imageElement = document.createElement("img");
     const titleElement = document.createElement("figcaption");
