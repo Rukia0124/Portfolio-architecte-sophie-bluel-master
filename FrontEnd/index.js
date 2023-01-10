@@ -121,9 +121,6 @@ function getCookie(name) {
   console.log(value);
   if (parts.length == 2) return parts.pop().split(";").shift();
 }
-// window.onload = checkCookie();
-
-window.addEventListener("unload", function (event) {});
 
 document.getElementById("logout").addEventListener("click", function () {
   document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";

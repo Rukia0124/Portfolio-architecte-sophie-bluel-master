@@ -26,12 +26,13 @@ document
           response.json().then(function (data) {
             document.cookie = "access_token=" + data.token;
             window.location = "index.html";
+            document.querySelector(".error").style = "display:none";
           });
         } else {
-          alert("Connexion échouée");
+          document.querySelector(".error").style = "display:block";
         }
       })
       .catch(function (error) {
-        console.error(error);
+        console.error("erreur connexion:" + error);
       });
   });

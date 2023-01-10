@@ -338,6 +338,11 @@ input[type="submit"],
 	border-radius: 60px;
 }
 
+#login-form>input[type=submit] {
+	margin: 20px auto;
+
+}
+
 #addWork {
 	padding: 10px;
 	width: 250px;
@@ -346,8 +351,8 @@ input[type="submit"],
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
+	bottom: 0;
 	margin: 2em;
-
 }
 
 .modal {
@@ -397,4 +402,9 @@ h3 {
 
 #editwork>img {
 	width: 100%;
+}
+
+.error {
+	color: red;
+	display: none;
 }
