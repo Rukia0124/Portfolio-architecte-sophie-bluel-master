@@ -11,6 +11,9 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
 		rel="stylesheet">
 	<meta name="description" content="">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+		integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="./assets/style.css">
 
 </head>
@@ -28,6 +31,16 @@
 			</ul>
 		</nav>
 	</header>
+	<aside id="modifymodal" class="modal" aria-hidden="true" role="dialog" aria-modal="false"
+		aria-labelledby="titlemodal1" style="display:none">
+		<div class="modal-wrapper">
+			<i class="fa-solid fa-xmark" id="closemodal"></i>
+			<h3 id="titlemodal1">Galerie photo</h3>
+			<div id="edit-gallery"></div>
+			<button id="addWork">Ajouter une photo</button>
+			<button id="deleteGallery">Supprimer la galerie</button>
+		</div>
+	</aside>
 	<main>
 		<section id="introduction">
 			<figure>
@@ -45,7 +58,8 @@
 		</section>
 		<section id="portfolio">
 			<h2>Mes Projets</h2>
-			<button id="modify-btn">Modifier</button>
+			<button id="modify-btn" class="modify-btn" href="modifymodal">Modifier</button>
+
 			<div class="filters"></div>
 			<div class="gallery">
 			</div>

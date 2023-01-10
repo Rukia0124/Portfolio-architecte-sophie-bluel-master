@@ -3,6 +3,7 @@ const filters = document.querySelector(".filters");
 
 let galleryData = [];
 let filteredGalleryData = [];
+let modal = null;
 
 async function fetchGallery() {
   await fetch("http://localhost:5678/api/works")
@@ -13,6 +14,7 @@ async function fetchGallery() {
 
   filtersDisplay();
   worksDisplay(galleryData);
+  modalDisplay(galleryData);
 }
 // function localFetch() {
 //   let localGallery = window.localStorage.getItem("gallery");
@@ -96,6 +98,7 @@ window.addEventListener("load", (event) => {
   // localFetch();
   fetchGallery();
   checkCookie();
+  modalDisplay();
 });
 
 function checkCookie() {
@@ -125,4 +128,63 @@ window.addEventListener("unload", function (event) {});
 document.getElementById("logout").addEventListener("click", function () {
   document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
   window.location.reload();
+});
+
+function modalDisplay(data) {
+  for (let i = 0; i < galleryData.length; i++) {
+    const editGallery = document.getElementById("edit-gallery");
+    const article = document.createElement("article");
+    const imageElement = document.createElement("img");
+    const titleElement = document.createElement("figcaption");
+    article.id = "editwork";
+    imageElement.src = data[i].imageUrl;
+    imageElement.alt = data[i].title;
+    imageElement.crossOrigin = "anonymous";
+    titleElement.innerText = "éditer";
+    titleElement.id = "img" + data[i].id;
+    editGallery.appendChild(article);
+    article.appendChild(imageElement);
+    article.appendChild(titleElement);
+  }
+}
+
+function openModal(e) {
+  e.preventDefault();
+  const target = document.querySelector("#modifymodal");
+  target.style.display = null;
+  target.removeAttribute("aria-hidden");
+  target.setAttribute("aria-modal", "true");
+  modal = target;
+  modal.querySelector("#closemodal").addEventListener("click", closeModal);
+  modal.addEventListener("click", closeModal);
+  modal
+    .querySelector(".modal-wrapper")
+    .addEventListener("click", stopPropagation);
+}
+const modifyBtn = document.querySelector(".modify-btn");
+modifyBtn.addEventListener("click", (e) => {
+  openModal(e);
+});
+
+function closeModal(e) {
+  e.preventDefault();
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  modal.removeAttribute("aria-modal");
+  modal.removeEventListener("click", closeModal);
+  modal.querySelector("#closemodal").removeEventListener("click", closeModal);
+  modal
+    .querySelector(".modal-wrapper")
+    .removeEventListener("click", stopPropagation);
+  modal = null;
+}
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" || e.key === "Esc") {
+    closeModal(e);
+  } else {
+    return;
+  }
 });
