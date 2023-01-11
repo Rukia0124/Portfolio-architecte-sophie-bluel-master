@@ -40,7 +40,7 @@ function worksDisplay(data) {
   // `
   //   )
   //   .join("");
-  console.log(data);
+
   gallery.innerHTML = "";
   for (let i = 0; i < data.length; i++) {
     const workElement = document.createElement("figure");
@@ -104,7 +104,6 @@ window.addEventListener("load", (event) => {
 
 function checkCookie() {
   let token = getCookie("access_token");
-  console.log("test", token);
   if (token) {
     document.getElementById("modify-btn").style.display = "block";
     document.getElementById("login").style.display = "none";
@@ -119,7 +118,6 @@ function checkCookie() {
 function getCookie(name) {
   let value = "; " + document.cookie;
   let parts = value.split("; " + name + "=");
-  console.log(value);
   if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
@@ -127,6 +125,8 @@ document.getElementById("logout").addEventListener("click", function () {
   document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
   window.location.reload();
 });
+
+// MODAL
 
 function modalDisplay(data) {
   for (let i = 0; i < galleryData.length; i++) {
@@ -186,3 +186,38 @@ window.addEventListener("keydown", function (e) {
     return;
   }
 });
+
+// DELETE GALLERY
+
+const deleteAllBtn = document.querySelector("#deleteGallery");
+console.log(deleteAllBtn);
+
+deleteAllBtn.addEventListener("click", (e) => {
+  deleteGallery(e);
+});
+
+async function deleteGallery(e) {
+  e.preventDefault();
+  const token = getCookie("access_token");
+  if (!token) {
+    return console.log("User not authenticated");
+  }
+
+  for (i = 0; i < galleryData.length; i++) {
+    await fetch("http://localhost:5678/api/works/" + galleryData[i].id, {
+      method: "DELETE",
+      headers: {
+        accept: "*/*",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("Gallery deleted successfully");
+        } else {
+          console.log("Error while deleting the Gallery");
+        }
+      })
+      .catch((err) => console.log("Error while deleting the Gallery", err));
+  }
+}
