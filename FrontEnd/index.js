@@ -134,7 +134,12 @@ function modalDisplay(data) {
     const article = document.createElement("article");
     const imageElement = document.createElement("img");
     const titleElement = document.createElement("figcaption");
+    const deleteIcon = document.createElement("i");
+    const deleteWork = document.createElement("span");
     article.id = "editwork";
+    deleteWork.id = "deletework";
+    deleteIcon.classList.add("fa-solid", "fa-trash-can");
+    deleteIcon.id = data[i].id;
     imageElement.src = data[i].imageUrl;
     imageElement.alt = data[i].title;
     imageElement.crossOrigin = "anonymous";
@@ -143,6 +148,15 @@ function modalDisplay(data) {
     editGallery.appendChild(article);
     article.appendChild(imageElement);
     article.appendChild(titleElement);
+    article.appendChild(deleteWork);
+    deleteWork.appendChild(deleteIcon);
+
+    deleteWork.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (confirm("Êtes-vous sûr de vouloir supprimer le projet ?")) {
+        self.deleteWork(e);
+      }
+    });
   }
 }
 
@@ -193,11 +207,13 @@ const deleteAllBtn = document.querySelector("#deleteGallery");
 console.log(deleteAllBtn);
 
 deleteAllBtn.addEventListener("click", (e) => {
-  deleteGallery(e);
+  e.preventDefault();
+  if (confirm("Êtes-vous sûr de vouloir supprimer la galerie ?")) {
+    deleteGallery();
+  }
 });
 
 async function deleteGallery(e) {
-  e.preventDefault();
   const token = getCookie("access_token");
   if (!token) {
     return console.log("User not authenticated");
@@ -220,4 +236,27 @@ async function deleteGallery(e) {
       })
       .catch((err) => console.log("Error while deleting the Gallery", err));
   }
+}
+// DELETE WORKS
+async function deleteWork(e) {
+  const token = getCookie("access_token");
+  if (!token) {
+    return console.log("User not authenticated");
+  }
+
+  await fetch("http://localhost:5678/api/works/" + e.target.id, {
+    method: "DELETE",
+    headers: {
+      accept: "*/*",
+      Authorization: "Bearer " + token,
+    },
+  })
+    .then((res) => {
+      if (res.ok) {
+        console.log("Work deleted successfully");
+      } else {
+        console.log("Error while deleting the work");
+      }
+    })
+    .catch((err) => console.log("Error while deleting the work", err));
 }

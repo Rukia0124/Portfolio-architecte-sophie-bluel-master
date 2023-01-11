@@ -406,12 +406,24 @@ h3 {
 	position: relative;
 }
 
-.modal-wrapper i {
+.modal-wrapper .cross {
 	font-size: 22px;
 	position: absolute;
 	top: 0;
 	right: 0;
 	margin: 25px;
+}
+
+#editwork>span>i {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 10px;
+	cursor: pointer;
+}
+
+#editwork {
+	position: relative;
 }
 
 #edit-gallery {
