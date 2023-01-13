@@ -288,17 +288,16 @@ li:hover {
 #login {
 	width: 50%;
 	margin: auto;
-}
-
-#contact>*,
-#login>* {
-	text-align: center;
-
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
 #contact h2,
+#contact p,
 #login h2 {
 	margin-bottom: 20px;
+	text-align: center;
 }
 
 #contact form,
@@ -339,6 +338,7 @@ input[type="submit"],
 	text-align: center;
 	border-radius: 60px;
 	cursor: pointer;
+
 }
 
 .title {
@@ -412,6 +412,16 @@ h3 {
 	top: 0;
 	right: 0;
 	margin: 25px;
+	cursor: pointer;
+}
+
+.modal-wrapper .back {
+	font-size: 22px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 25px;
+	cursor: pointer;
 }
 
 #editwork>span>i {

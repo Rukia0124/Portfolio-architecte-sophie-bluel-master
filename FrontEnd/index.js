@@ -160,6 +160,10 @@ function modalDisplay(data) {
   }
 }
 
+let closeModalEventAdded = false;
+let closeModalCloseEventAdded = false;
+let stopPropagationEventAdded = false;
+
 function openModal(e) {
   e.preventDefault();
   const target = document.querySelector("#modifymodal");
@@ -168,10 +172,13 @@ function openModal(e) {
   target.setAttribute("aria-modal", "true");
   modal = target;
   modal.querySelector("#closemodal").addEventListener("click", closeModal);
+  closeModalCloseEventAdded = true;
   modal.addEventListener("click", closeModal);
+  closeModalEventAdded = true;
   modal
     .querySelector(".modal-wrapper")
     .addEventListener("click", stopPropagation);
+  stopPropagationEventAdded = true;
 }
 const modifyBtn = document.querySelector(".modify-btn");
 modifyBtn.addEventListener("click", (e) => {
@@ -183,11 +190,20 @@ function closeModal(e) {
   modal.style.display = "none";
   modal.setAttribute("aria-hidden", "true");
   modal.removeAttribute("aria-modal");
-  modal.removeEventListener("click", closeModal);
-  modal.querySelector("#closemodal").removeEventListener("click", closeModal);
-  modal
-    .querySelector(".modal-wrapper")
-    .removeEventListener("click", stopPropagation);
+  if (closeModalEventAdded) {
+    modal.removeEventListener("click", closeModal);
+    closeModalEventAdded = false;
+  }
+  if (closeModalCloseEventAdded) {
+    modal.querySelector("#closemodal").removeEventListener("click", closeModal);
+    closeModalCloseEventAdded = false;
+  }
+  if (stopPropagationEventAdded) {
+    modal
+      .querySelector(".modal-wrapper")
+      .removeEventListener("click", stopPropagation);
+    stopPropagationEventAdded = false;
+  }
   modal = null;
 }
 function stopPropagation(e) {
@@ -204,7 +220,6 @@ window.addEventListener("keydown", function (e) {
 // DELETE GALLERY
 
 const deleteAllBtn = document.querySelector("#deleteGallery");
-console.log(deleteAllBtn);
 
 deleteAllBtn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -260,3 +275,67 @@ async function deleteWork(e) {
     })
     .catch((err) => console.log("Error while deleting the work", err));
 }
+// ADD WORK MODAL
+let closeAddModalEventAdded = false;
+let closeAddModalCloseEventAdded = false;
+
+function openAddModal(e) {
+  e.preventDefault();
+  closeModal(e);
+  const target = document.querySelector("#addmodal");
+  target.style.display = null;
+  target.removeAttribute("aria-hidden");
+  target.setAttribute("aria-modal", "true");
+  modal = target;
+  modal
+    .querySelector("#closeaddmodal")
+    .addEventListener("click", closeAddModal);
+  closeAddModalCloseEventAdded = true;
+  modal.addEventListener("click", closeAddModal);
+  closeAddModalEventAdded = true;
+  modal
+    .querySelector(".modal-wrapper")
+    .addEventListener("click", stopPropagation);
+  stopPropagationEventAdded = true;
+  modal.querySelector("#back").addEventListener("click", () => {
+    closeAddModal(e), openModal(e);
+  });
+}
+const addBtn = document.querySelector("#addWork");
+addBtn.addEventListener("click", (e) => {
+  openAddModal(e);
+});
+
+function closeAddModal(e) {
+  e.preventDefault();
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  modal.removeAttribute("aria-modal");
+  if (closeAddModalEventAdded) {
+    modal.removeEventListener("click", closeAddModal);
+    closeAddModalEventAdded = false;
+  }
+  if (closeAddModalCloseEventAdded) {
+    modal
+      .querySelector("#closeaddmodal")
+      .removeEventListener("click", closeAddModal);
+    closeAddModalCloseEventAdded = false;
+  }
+  if (stopPropagationEventAdded) {
+    modal
+      .querySelector(".modal-wrapper")
+      .removeEventListener("click", stopPropagation);
+    stopPropagationEventAdded = false;
+  }
+  modal = null;
+}
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" || e.key === "Esc") {
+    closeAddModal(e);
+  } else {
+    return;
+  }
+});
