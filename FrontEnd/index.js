@@ -357,13 +357,11 @@ function addNewWork() {
   formData.append("title", workTitleField.value);
   formData.append("category", workCatField.value);
   formData.append("image", workImgField.files[0]);
-  console.log(formData);
 
   const token = getCookie("access_token");
   if (!token) {
     return console.log("User not authenticated");
   }
-  console.log(token);
 
   let postHeaders = new Headers({
     accept: "application/json",
@@ -387,23 +385,20 @@ function addNewWork() {
 // DRAG AND DROP
 document
   .querySelector(".custom-input-container")
-  .addEventListener("click", (e) => {
+  .addEventListener("drop", (e) => {
     dropHandler(e);
   });
 
 function dropHandler(e) {
-  e.preventDefault(e);
+  let fileInput = document.querySelector("#custom-input");
+  console.log("File(s) dropped");
+  e.preventDefault();
+
   if (e.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
     [...e.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === "file") {
-        const file = item.getAsFile();
-        console.log(`… file[${i}].name = ${file.name}`);
-      }
+      fileInput.files = e.dataTransfer.files;
     });
   } else {
-    // Use DataTransfer interface to access the file(s)
     [...e.dataTransfer.files].forEach((file, i) => {
       console.log(`… file[${i}].name = ${file.name}`);
     });
