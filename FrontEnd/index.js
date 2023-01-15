@@ -301,6 +301,7 @@ function openAddModal(e) {
     closeAddModal(e), openModal(e);
   });
 }
+
 const addBtn = document.querySelector("#addWork");
 addBtn.addEventListener("click", (e) => {
   openAddModal(e);
@@ -339,3 +340,75 @@ window.addEventListener("keydown", function (e) {
     return;
   }
 });
+
+// ADD WORK
+
+document.querySelector("#addWorkBtn").addEventListener("click", (e) => {
+  e.preventDefault();
+  addNewWork();
+});
+
+function addNewWork() {
+  const workImgField = document.querySelector('input[type="file"]');
+  const workTitleField = document.querySelector("#title");
+  const workCatField = document.querySelector("#cat");
+
+  let formData = new FormData();
+  formData.append("title", workTitleField.value);
+  formData.append("category", workCatField.value);
+  formData.append("image", workImgField.files[0]);
+  console.log(formData);
+
+  const token = getCookie("access_token");
+  if (!token) {
+    return console.log("User not authenticated");
+  }
+  console.log(token);
+
+  let postHeaders = new Headers({
+    accept: "application/json",
+    Authorization: "Bearer " + token,
+    // "Content-Type": "multipart/form-data",
+  });
+
+  fetch("http://localhost:5678/api/works/", {
+    method: "POST",
+    headers: postHeaders,
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+// DRAG AND DROP
+document
+  .querySelector(".custom-input-container")
+  .addEventListener("click", (e) => {
+    dropHandler(e);
+  });
+
+function dropHandler(e) {
+  e.preventDefault(e);
+  if (e.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file(s)
+    [...e.dataTransfer.items].forEach((item, i) => {
+      // If dropped items aren't files, reject them
+      if (item.kind === "file") {
+        const file = item.getAsFile();
+        console.log(`… file[${i}].name = ${file.name}`);
+      }
+    });
+  } else {
+    // Use DataTransfer interface to access the file(s)
+    [...e.dataTransfer.files].forEach((file, i) => {
+      console.log(`… file[${i}].name = ${file.name}`);
+    });
+  }
+}
+function dragOverHandler(e) {
+  e.preventDefault();
+}

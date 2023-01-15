@@ -47,16 +47,22 @@
 			<i class="fa-solid fa-arrow-left back" id="back"></i>
 			<h3>Ajout photo</h3>
 			<form action="#" method="post">
-				<input type="file">
-				<label for="title">titre</label>
+				<div class="custom-input-container" id="drop_zone" ondrop="dropHandler(event);"
+					ondragover="dragOverHandler(event);">>
+					<i class="fa-regular fa-image"></i>
+					<input type="file" class="custom-input" id="custom-input" accept="image/png, image/jpg">
+					<label for="custom-input">+ Ajouter photo</label>
+					<p>jpg, png : 4mo max</p>
+				</div>
+				<label for="title">Titre</label>
 				<input type="text" name="title" id="title">
 				<label for="cat">Catégorie</label>
-				<select name="cat">
-					<option value="Appartements">Appartements</option>
-					<option value="Hotels & restaurants">Hotels & restaurants</option>
-					<option value="Objets">Objets</option>
+				<select name="cat" id="cat">
+					<option value="2">Appartements</option>
+					<option value="3">Hotels & restaurants</option>
+					<option value="1">Objets</option>
 				</select>
-				<input type="submit" value="Valider">
+				<input type="submit" value="Valider" id="addWorkBtn">
 		</div>
 	</aside>
 	<main>

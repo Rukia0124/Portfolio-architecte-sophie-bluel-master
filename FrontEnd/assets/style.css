@@ -301,7 +301,8 @@ li:hover {
 }
 
 #contact form,
-#login form {
+#login form,
+#addmodal form {
 	text-align: left;
 	margin-top: 30px;
 	display: flex;
@@ -309,7 +310,9 @@ li:hover {
 }
 
 #contact input,
-#login input {
+#login input,
+#addmodal input,
+#addmodal select {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
@@ -317,7 +320,8 @@ li:hover {
 }
 
 #contact label,
-#login input {
+#login label,
+#addmodal label {
 	margin: 2em 0 1em 0;
 }
 
@@ -338,7 +342,6 @@ input[type="submit"],
 	text-align: center;
 	border-radius: 60px;
 	cursor: pointer;
-
 }
 
 .title {
@@ -458,4 +461,62 @@ h3 {
 .error {
 	color: red;
 	display: none;
+}
+
+.custom-input-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: #E8F1F7;
+	height: 200px;
+	position: relative;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+	visibility: hidden;
+}
+
+#addmodal form {
+	width: 400px;
+}
+
+#addmodal>div>form>div>label {
+	display: block;
+	width: 170px;
+	height: 40px;
+	border-radius: 25px;
+	background: #CBD6DC;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #306685;
+	font-weight: bold;
+	cursor: pointer;
+	transition: transform .2s ease-out;
+}
+
+#custom-input {
+	visibility: hidden
+}
+
+#addmodal input[type=submit] {
+	width: 237px;
+	height: 36px;
+	left: 600px;
+	top: 1239px;
+
+	background: #A7A7A7;
+	border-radius: 60px;
+}
+
+.custom-input-container i {
+	position: absolute;
+	top: 30px;
+	font-size: 60px;
+	color: #B9C5CC;
+}
+
+.custom-input-container p {
+	font-size: 10px;
 }
