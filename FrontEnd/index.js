@@ -343,21 +343,41 @@ window.addEventListener("keydown", function (e) {
 
 // ADD WORK
 
-document.querySelector("#addWorkBtn").addEventListener("click", (e) => {
-  e.preventDefault();
-  addNewWork();
-});
+const workImgField = document.querySelector('input[type="file"]');
+const sizeError = document.querySelector("#sizeError");
+const workTitleField = document.querySelector("#title");
+const workCatField = document.querySelector("#cat");
+const emptyFieldError = document.querySelector("#emptyFieldError");
+
+function keepLastFile() {
+  while (workImgField.files.length > 1) {
+    workImgField.files.pop();
+  }
+}
+
+function checkFileSize() {
+  if (workCatField.value === "" || workTitleField.value === "") {
+    emptyFieldError.style.display = "block";
+  } else if (workImgField.files.length === 0) {
+    emptyFieldError.style.display = "block";
+  } else if (
+    workImgField.files[0] &&
+    workImgField.files[0].size &&
+    workImgField.files[0].size > 4194304
+  ) {
+    sizeError.style.display = "block";
+  } else {
+    sizeError.style.display = "none";
+    emptyFieldError.style.display = "none";
+    addNewWork();
+  }
+}
 
 function addNewWork() {
-  const workImgField = document.querySelector('input[type="file"]');
-  const workTitleField = document.querySelector("#title");
-  const workCatField = document.querySelector("#cat");
-
   let formData = new FormData();
   formData.append("title", workTitleField.value);
   formData.append("category", workCatField.value);
   formData.append("image", workImgField.files[0]);
-
   const token = getCookie("access_token");
   if (!token) {
     return console.log("User not authenticated");
@@ -368,11 +388,11 @@ function addNewWork() {
     Authorization: "Bearer " + token,
     // "Content-Type": "multipart/form-data",
   });
-
   fetch("http://localhost:5678/api/works/", {
     method: "POST",
     headers: postHeaders,
     body: formData,
+    redirect: "manual",
   })
     .then((response) => response.json())
     .then((data) => {
@@ -381,7 +401,15 @@ function addNewWork() {
     .catch((error) => {
       console.error("Error:", error);
     });
+  return false;
 }
+
+document.querySelector("#addWorkBtn").addEventListener("click", (e) => {
+  e.preventDefault();
+  keepLastFile();
+  checkFileSize();
+});
+
 // DRAG AND DROP
 document
   .querySelector(".custom-input-container")
