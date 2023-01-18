@@ -37,6 +37,7 @@
 			<i class="fa-solid fa-xmark cross" id="closemodal"></i>
 			<h3 id="titlemodal1">Galerie photo</h3>
 			<div id="edit-gallery"></div>
+			<span id="sucessDelete">Projet supprimé.</span>
 			<button id="addWork">Ajouter une photo</button>
 			<button id="deleteGallery">Supprimer la galerie</button>
 		</div>
@@ -46,13 +47,14 @@
 		<div class="modal-wrapper"><i class="fa-solid fa-xmark cross" id="closeaddmodal"></i>
 			<i class="fa-solid fa-arrow-left back" id="back"></i>
 			<h3>Ajout photo</h3>
-			<form action="#" method="post">
-				<div class="custom-input-container" id="drop-zone" ondrop="dropHandler(event);"
-					ondragover="dragOverHandler(event);">
-					<i class="fa-regular fa-image"></i>
-					<input type="file" class="custom-input" id="custom-input" accept="image/png, image/jpg">
-					<label for="custom-input">+ Ajouter photo</label>
-					<p>jpg, png : 4mo max</p>
+			<form action="#" method="post" id="addForm">
+				<div class="custom-input-container" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+					<i class="fa-regular fa-image" id="imgI"></i>
+					<img id="preview" src="" />
+					<input type="file" class="custom-input" id="custom-input" accept="image/png, image/jpg"
+						onchange="previewImg(event)">
+					<label for="custom-input" id="fileLabel">+ Ajouter photo</label>
+					<p id="maxSize">jpg, png : 4mo max</p>
 				</div>
 				<label for="title">Titre</label>
 				<input type="text" name="title" id="title">
@@ -65,7 +67,8 @@
 				<input type="submit" value="Valider" id="addWorkBtn">
 				<div id="emptyFieldError">Tous les champs doivent être remplis.</div>
 				<div id="sizeError">Le fichier doit faire une taille de 4mo maximum.</div>
-		</div>
+				<div id="successAdd">Projet ajouté.</div>
+			</form>
 	</aside>
 	<main>
 		<section id="introduction">

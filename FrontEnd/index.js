@@ -268,7 +268,10 @@ async function deleteWork(e) {
   })
     .then((res) => {
       if (res.ok) {
-        console.log("Work deleted successfully");
+        document.querySelector("#sucessDelete").style.display = "block";
+        setTimeout(() => {
+          document.querySelector("#sucessDelete").style.display = "none";
+        }, "2000");
       } else {
         console.log("Error while deleting the work");
       }
@@ -374,6 +377,7 @@ function checkFileSize() {
 }
 
 function addNewWork() {
+  const successAdd = document.querySelector("#successAdd");
   let formData = new FormData();
   formData.append("title", workTitleField.value);
   formData.append("category", workCatField.value);
@@ -386,7 +390,6 @@ function addNewWork() {
   let postHeaders = new Headers({
     accept: "application/json",
     Authorization: "Bearer " + token,
-    // "Content-Type": "multipart/form-data",
   });
   fetch("http://localhost:5678/api/works/", {
     method: "POST",
@@ -396,7 +399,12 @@ function addNewWork() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
+      successAdd.style.display = "block";
+      setTimeout(() => {
+        successAdd.style.display = "none";
+        document.querySelector("#addForm").reset();
+        removePreviewImg();
+      }, "3000");
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -410,6 +418,43 @@ document.querySelector("#addWorkBtn").addEventListener("click", (e) => {
   checkFileSize();
 });
 
+// PREVIEW IMG
+const previewContainer = document.querySelector(".custom-input-container");
+const preview = document.querySelector("#preview");
+const fileLabel = document.querySelector("#fileLabel");
+const maxSize = document.querySelector("#maxSize");
+const imgI = document.querySelector("#imgI");
+const delSpan = document.createElement("span");
+const deleteIcon = document.createElement("i");
+
+function previewImg(event) {
+  preview.src = URL.createObjectURL(
+    event.dataTransfer && event.dataTransfer.files[0]
+      ? event.dataTransfer.files[0]
+      : workImgField.files[0]
+  );
+  preview.style.position = "relative";
+
+  deleteIcon.classList.add("fa-solid", "fa-trash-can");
+  deleteIcon.style.position = "absolute";
+  delSpan.append(deleteIcon);
+  previewContainer.append(delSpan);
+  fileLabel.style.display = "none";
+  maxSize.style.display = "none";
+  imgI.style.display = "none";
+  preview.onload = function () {
+    URL.revokeObjectURL(preview.src);
+  };
+
+  delSpan.addEventListener("click", removePreviewImg);
+}
+function removePreviewImg() {
+  deleteIcon.style.display = "none";
+  preview.src = "";
+  fileLabel.style.display = "flex";
+  maxSize.style.display = "block";
+  imgI.style.display = "block";
+}
 // DRAG AND DROP
 document
   .querySelector(".custom-input-container")
@@ -419,9 +464,8 @@ document
 
 function dropHandler(e) {
   let fileInput = document.querySelector("#custom-input");
-  console.log("File(s) dropped");
   e.preventDefault();
-
+  previewImg(e);
   if (e.dataTransfer.items) {
     [...e.dataTransfer.items].forEach((item, i) => {
       fileInput.files = e.dataTransfer.files;
@@ -432,6 +476,13 @@ function dropHandler(e) {
     });
   }
 }
+
+document
+  .querySelector(".custom-input-container")
+  .addEventListener("dragover", (e) => {
+    dragOverHandler(e);
+  });
+
 function dragOverHandler(e) {
   e.preventDefault();
 }
