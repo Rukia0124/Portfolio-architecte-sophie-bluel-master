@@ -350,6 +350,43 @@ function checkFileSize() {
     addNewWork();
   }
 }
+function addNewImg(id, title, image) {
+  const newFigure = document.createElement("figure");
+  const newImg = document.createElement("img");
+  const newTitle = document.createElement("figcaption");
+  const article = document.createElement("article");
+  const deleteIcon = document.createElement("i");
+  const deleteWorkSpan = document.createElement("span");
+  const editGallery = document.getElementById("edit-gallery");
+  const titleElement = document.createElement("figcaption");
+
+  newFigure.classList = "img-" + id;
+  newTitle.innerText = title;
+  newImg.src = image;
+  newImg.crossOrigin = "anonymous";
+  gallery.appendChild(newFigure);
+  newFigure.appendChild(newImg);
+  newFigure.appendChild(newTitle);
+
+  titleElement.innerText = "éditer";
+  article.id = "editwork";
+  article.classList = "img-" + id;
+  deleteWorkSpan.id = "deletework";
+  deleteIcon.id = id;
+  deleteIcon.classList.add("fa-solid", "fa-trash-can");
+  editGallery.appendChild(article);
+  article.appendChild(newImg);
+  article.appendChild(titleElement);
+  article.appendChild(deleteWorkSpan);
+  deleteWorkSpan.appendChild(deleteIcon);
+
+  deleteWorkSpan.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (confirm("Êtes-vous sûr de vouloir supprimer le projet ?")) {
+      deleteWork(e);
+    }
+  });
+}
 
 function addNewWork() {
   const successAdd = document.querySelector("#successAdd");
@@ -369,6 +406,7 @@ function addNewWork() {
         successAdd.style.display = "none";
         document.querySelector("#addForm").reset();
         removePreviewImg();
+        addNewImg(data.id, data.title, data.imageUrl);
       }, "3000");
     })
     .catch((error) => {
