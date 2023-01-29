@@ -1,32 +1,22 @@
+import ApiService from "./ApiService.js";
+
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
+const Api = new ApiService();
 
 let galleryData = [];
 let filteredGalleryData = [];
 let modal = null;
 
 async function fetchGallery() {
-  await fetch("http://localhost:5678/api/works")
-    .then((res) => res.json())
-    .then((data) => (galleryData = data));
-  // const storeGallery = JSON.stringify(galleryData);
-  // window.localStorage.setItem("gallery", storeGallery);
+  await Api.getGallery().then((data) => {
+    galleryData = data;
+  });
 
   filtersDisplay();
   worksDisplay(galleryData);
   modalDisplay(galleryData);
 }
-// function localFetch() {
-//   let localGallery = window.localStorage.getItem("gallery");
-//   if (localGallery === null) {
-//     fetchGallery();
-//   } else {
-//     localGallery = JSON.parse(localGallery);
-//     galleryData = localGallery;
-//     filtersDisplay();
-//     worksDisplay(galleryData);
-//   }
-// }
 
 function worksDisplay(data) {
   // gallery.innerHTML = data
@@ -46,6 +36,7 @@ function worksDisplay(data) {
     const workElement = document.createElement("figure");
     const imageElement = document.createElement("img");
     const titleElement = document.createElement("figcaption");
+    workElement.classList = "img-" + data[i].id;
     imageElement.src = data[i].imageUrl;
     imageElement.alt = data[i].title;
     imageElement.crossOrigin = "anonymous";
@@ -96,15 +87,13 @@ function navigateToLoginPage() {
   window.location = "login.html";
 }
 window.addEventListener("load", (event) => {
-  // localFetch();
   fetchGallery();
   checkCookie();
   modalDisplay();
 });
 
 function checkCookie() {
-  let token = getCookie("access_token");
-  if (token) {
+  if (Api.isConnected()) {
     document.getElementById("modify-btn").style.display = "block";
     document.getElementById("login").style.display = "none";
     document.getElementById("logout").style.display = "block";
@@ -113,12 +102,6 @@ function checkCookie() {
     document.getElementById("login").style.display = "block";
     document.getElementById("logout").style.display = "none";
   }
-}
-
-function getCookie(name) {
-  let value = "; " + document.cookie;
-  let parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 document.getElementById("logout").addEventListener("click", function () {
@@ -135,9 +118,10 @@ function modalDisplay(data) {
     const imageElement = document.createElement("img");
     const titleElement = document.createElement("figcaption");
     const deleteIcon = document.createElement("i");
-    const deleteWork = document.createElement("span");
+    const deleteWorkSpan = document.createElement("span");
     article.id = "editwork";
-    deleteWork.id = "deletework";
+    article.classList = "img-" + data[i].id;
+    deleteWorkSpan.id = "deletework";
     deleteIcon.classList.add("fa-solid", "fa-trash-can");
     deleteIcon.id = data[i].id;
     imageElement.src = data[i].imageUrl;
@@ -148,13 +132,13 @@ function modalDisplay(data) {
     editGallery.appendChild(article);
     article.appendChild(imageElement);
     article.appendChild(titleElement);
-    article.appendChild(deleteWork);
-    deleteWork.appendChild(deleteIcon);
+    article.appendChild(deleteWorkSpan);
+    deleteWorkSpan.appendChild(deleteIcon);
 
-    deleteWork.addEventListener("click", (e) => {
+    deleteWorkSpan.addEventListener("click", (e) => {
       e.preventDefault();
       if (confirm("Êtes-vous sûr de vouloir supprimer le projet ?")) {
-        self.deleteWork(e);
+        deleteWork(e);
       }
     });
   }
@@ -219,6 +203,13 @@ window.addEventListener("keydown", function (e) {
 
 // DELETE GALLERY
 
+function deleteDomImg(id) {
+  let elementList = document.querySelectorAll(".img-" + id);
+  elementList.forEach((elem, i) => {
+    elem.remove();
+  });
+}
+
 const deleteAllBtn = document.querySelector("#deleteGallery");
 
 deleteAllBtn.addEventListener("click", (e) => {
@@ -229,21 +220,14 @@ deleteAllBtn.addEventListener("click", (e) => {
 });
 
 async function deleteGallery(e) {
-  const token = getCookie("access_token");
-  if (!token) {
-    return console.log("User not authenticated");
+  if (!Api.isConnected()) {
+    return;
   }
-
-  for (i = 0; i < galleryData.length; i++) {
-    await fetch("http://localhost:5678/api/works/" + galleryData[i].id, {
-      method: "DELETE",
-      headers: {
-        accept: "*/*",
-        Authorization: "Bearer " + token,
-      },
-    })
+  for (let i = 0; i < galleryData.length; i++) {
+    Api.deleteWork(galleryData[i].id)
       .then((res) => {
         if (res.ok) {
+          deleteDomImg(galleryData[i].id);
           console.log("Gallery deleted successfully");
         } else {
           console.log("Error while deleting the Gallery");
@@ -254,20 +238,13 @@ async function deleteGallery(e) {
 }
 // DELETE WORKS
 async function deleteWork(e) {
-  const token = getCookie("access_token");
-  if (!token) {
-    return console.log("User not authenticated");
+  if (!Api.isConnected) {
+    return;
   }
-
-  await fetch("http://localhost:5678/api/works/" + e.target.id, {
-    method: "DELETE",
-    headers: {
-      accept: "*/*",
-      Authorization: "Bearer " + token,
-    },
-  })
+  Api.deleteWork(e.target.id)
     .then((res) => {
       if (res.ok) {
+        deleteDomImg(e.target.id);
         document.querySelector("#sucessDelete").style.display = "block";
         setTimeout(() => {
           document.querySelector("#sucessDelete").style.display = "none";
@@ -333,9 +310,7 @@ function closeAddModal(e) {
   }
   modal = null;
 }
-function stopPropagation(e) {
-  e.stopPropagation();
-}
+
 window.addEventListener("keydown", function (e) {
   if (e.key === "Escape" || e.key === "Esc") {
     closeAddModal(e);
@@ -382,22 +357,12 @@ function addNewWork() {
   formData.append("title", workTitleField.value);
   formData.append("category", workCatField.value);
   formData.append("image", workImgField.files[0]);
-  const token = getCookie("access_token");
-  if (!token) {
+
+  if (!Api.isConnected) {
     return console.log("User not authenticated");
   }
 
-  let postHeaders = new Headers({
-    accept: "application/json",
-    Authorization: "Bearer " + token,
-  });
-  fetch("http://localhost:5678/api/works/", {
-    method: "POST",
-    headers: postHeaders,
-    body: formData,
-    redirect: "manual",
-  })
-    .then((response) => response.json())
+  Api.addWork(formData)
     .then((data) => {
       successAdd.style.display = "block";
       setTimeout(() => {
@@ -418,6 +383,14 @@ document.querySelector("#addWorkBtn").addEventListener("click", (e) => {
   checkFileSize();
 });
 
+let dragZone = document.querySelector(".custom-input-container");
+dragZone.addEventListener("drop", (e) => {
+  dropHandler(e);
+});
+dragZone.addEventListener("dragover", (e) => {
+  dragOverHandler(e);
+});
+
 // PREVIEW IMG
 const previewContainer = document.querySelector(".custom-input-container");
 const preview = document.querySelector("#preview");
@@ -426,6 +399,11 @@ const maxSize = document.querySelector("#maxSize");
 const imgI = document.querySelector("#imgI");
 const delSpan = document.createElement("span");
 const deleteIcon = document.createElement("i");
+const input = document.querySelector(".custom-input");
+
+input.addEventListener("change", (e) => {
+  previewImg(e);
+});
 
 function previewImg(event) {
   preview.src = URL.createObjectURL(

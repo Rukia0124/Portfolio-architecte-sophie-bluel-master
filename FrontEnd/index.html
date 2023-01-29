@@ -48,11 +48,10 @@
 			<i class="fa-solid fa-arrow-left back" id="back"></i>
 			<h3>Ajout photo</h3>
 			<form action="#" method="post" id="addForm">
-				<div class="custom-input-container" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+				<div class="custom-input-container">
 					<i class="fa-regular fa-image" id="imgI"></i>
 					<img id="preview" src="" />
-					<input type="file" class="custom-input" id="custom-input" accept="image/png, image/jpg"
-						onchange="previewImg(event)">
+					<input type="file" class="custom-input" id="custom-input" accept="image/png, image/jpg">
 					<label for="custom-input" id="fileLabel">+ Ajouter photo</label>
 					<p id="maxSize">jpg, png : 4mo max</p>
 				</div>
@@ -117,7 +116,8 @@
 			</ul>
 		</nav>
 	</footer>
-	<script src="./index.js">
+
+	<script type="module" src="./index.js">
 	</script>
 
 </body>

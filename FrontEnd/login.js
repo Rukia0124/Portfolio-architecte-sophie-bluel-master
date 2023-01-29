@@ -1,3 +1,6 @@
+import ApiService from "./ApiService.js";
+const Api = new ApiService();
+
 document
   .getElementById("login-form")
   .addEventListener("submit", function (event) {
@@ -5,22 +8,7 @@ document
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
 
-    let myHeaders = new Headers({
-      accept: "application/json",
-      "Content-Type": "application/json",
-    });
-
-    let myBody = JSON.stringify({
-      email: email,
-      password: password,
-    });
-
-    fetch("http://localhost:5678/api/users/login", {
-      method: "POST",
-      headers: myHeaders,
-      body: myBody,
-      credentials: "same-origin",
-    })
+    Api.login(email, password)
       .then(function (response) {
         if (response.ok) {
           response.json().then(function (data) {
