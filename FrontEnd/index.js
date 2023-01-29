@@ -359,6 +359,7 @@ function addNewImg(id, title, image) {
   const deleteWorkSpan = document.createElement("span");
   const editGallery = document.getElementById("edit-gallery");
   const titleElement = document.createElement("figcaption");
+  const miniImg = document.createElement("img");
 
   newFigure.classList = "img-" + id;
   newTitle.innerText = title;
@@ -374,8 +375,10 @@ function addNewImg(id, title, image) {
   deleteWorkSpan.id = "deletework";
   deleteIcon.id = id;
   deleteIcon.classList.add("fa-solid", "fa-trash-can");
+  miniImg.crossOrigin = "anonymous";
+  miniImg.src = image;
   editGallery.appendChild(article);
-  article.appendChild(newImg);
+  article.appendChild(miniImg);
   article.appendChild(titleElement);
   article.appendChild(deleteWorkSpan);
   deleteWorkSpan.appendChild(deleteIcon);
@@ -402,11 +405,11 @@ function addNewWork() {
   Api.addWork(formData)
     .then((data) => {
       successAdd.style.display = "block";
+      addNewImg(data.id, data.title, data.imageUrl);
       setTimeout(() => {
         successAdd.style.display = "none";
         document.querySelector("#addForm").reset();
         removePreviewImg();
-        addNewImg(data.id, data.title, data.imageUrl);
       }, "3000");
     })
     .catch((error) => {
