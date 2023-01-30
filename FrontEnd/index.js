@@ -456,6 +456,7 @@ function previewImg(event) {
 
   deleteIcon.classList.add("fa-solid", "fa-trash-can");
   deleteIcon.style.position = "absolute";
+  deleteIcon.style.display = "block";
   delSpan.append(deleteIcon);
   previewContainer.append(delSpan);
   fileLabel.style.display = "none";
