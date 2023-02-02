@@ -4,6 +4,11 @@ export default class ApiService {
   getGallery() {
     return fetch(URL_API + "works/").then((res) => res.json());
   }
+
+  getCategories() {
+    return fetch(URL_API + "categories").then((res) => res.json());
+  }
+
   deleteWork(itemId) {
     if (!this.isConnected()) {
       return false;

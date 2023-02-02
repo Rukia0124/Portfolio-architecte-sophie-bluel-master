@@ -2,17 +2,21 @@ import ApiService from "./ApiService.js";
 
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
+const filter = document.querySelectorAll(".filter");
 const Api = new ApiService();
 
 let galleryData = [];
 let filteredGalleryData = [];
 let modal = null;
+let categoryArray = [];
 
 async function fetchGallery() {
   await Api.getGallery().then((data) => {
     galleryData = data;
   });
-
+  await Api.getCategories().then((data) => {
+    categoryArray = data;
+  });
   filtersDisplay();
   worksDisplay(galleryData);
   modalDisplay(galleryData);
@@ -46,6 +50,7 @@ function worksDisplay(data) {
     gallery.appendChild(workElement);
   }
 }
+
 function filtersDisplay() {
   let filtersData = new Set();
   filtersData.add("Tous");
@@ -66,6 +71,10 @@ function addFilterListener() {
   let filter = document.querySelectorAll(".filter");
   for (let i = 0; i < filter.length; i++) {
     filter[i].addEventListener("click", (e) => {
+      filter.forEach((filter) => {
+        filter.classList.remove("cat-active");
+      });
+      e.target.classList.add("cat-active");
       const selectedFilter = e.target.innerText;
       const filteredGalleryData = galleryData.filter(
         (work) => work.category.name === selectedFilter
@@ -224,7 +233,7 @@ async function deleteGallery(e) {
     return;
   }
   for (let i = 0; i < galleryData.length; i++) {
-    Api.deleteWork(galleryData[i].id)
+    await Api.deleteWork(galleryData[i].id)
       .then((res) => {
         if (res.ok) {
           deleteDomImg(galleryData[i].id);
@@ -235,6 +244,8 @@ async function deleteGallery(e) {
       })
       .catch((err) => console.log("Error while deleting the Gallery", err));
   }
+  galleryData = [];
+  filtersDisplay();
 }
 // DELETE WORKS
 async function deleteWork(e) {
@@ -245,6 +256,12 @@ async function deleteWork(e) {
     .then((res) => {
       if (res.ok) {
         deleteDomImg(e.target.id);
+        for (let i = 0; i < galleryData.length; i++) {
+          if (galleryData[i].id == e.target.id) {
+            galleryData.splice(i, 1);
+          }
+        }
+        filtersDisplay();
         document.querySelector("#sucessDelete").style.display = "block";
         setTimeout(() => {
           document.querySelector("#sucessDelete").style.display = "none";
@@ -405,6 +422,13 @@ function addNewWork() {
   Api.addWork(formData)
     .then((data) => {
       successAdd.style.display = "block";
+      for (let i = 0; i < categoryArray.length; i++) {
+        if (categoryArray[i].id == data.categoryId) {
+          data.category = categoryArray[i];
+        }
+      }
+      galleryData.push(data);
+      filtersDisplay();
       addNewImg(data.id, data.title, data.imageUrl);
       setTimeout(() => {
         successAdd.style.display = "none";
